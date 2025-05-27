@@ -25,7 +25,7 @@ export const SignUpView = () => {
   const router = useRouter();
 
   const trpc = useTRPC();
-  const queryClient = useQueryClient()
+  const queryClient = useQueryClient();
 
   const register = useMutation(
     trpc.auth.register.mutationOptions({
@@ -33,7 +33,7 @@ export const SignUpView = () => {
         toast.error(error.message);
       },
       onSuccess: async () => {
-        await queryClient.invalidateQueries(trpc.auth.session.queryFilter())
+        await queryClient.invalidateQueries(trpc.auth.session.queryFilter());
         router.push("/");
         toast.success("Successfully Registered!");
       },

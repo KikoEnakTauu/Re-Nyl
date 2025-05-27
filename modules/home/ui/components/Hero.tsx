@@ -3,6 +3,8 @@
 import React from "react";
 import img from "@/public/hero-bg.jpg";
 import { Button } from "../../../../components/ui/button";
+import Link from "next/link";
+import { ShoppingCart, Users } from "lucide-react";
 
 const Hero = () => {
   return (
@@ -29,8 +31,23 @@ const Hero = () => {
       </div>
 
       {/* CTA Button */}
-      <div className="relative z-10 mt-8">
-        <Button size="lg">Discover</Button>
+      <div className="relative z-10 mt-8 flex gap-5">
+        {/* <Button size="lg">
+          
+        </Button> */}
+        <Button asChild variant={"primary"} size="lg" className="text-lg px-8 ">
+          <Link href="/shop" className="flex items-center">
+            <ShoppingCart className="mr-2 h-5 w-5" />
+            Start Shopping
+          </Link>
+        </Button>
+
+        <Button asChild variant={"second"} size="lg" className="text-lg px-8">
+          <Link href="/sign-up" className="flex items-center">
+            <Users className="mr-2 h-5 w-5" />
+            Become a Seller
+          </Link>
+        </Button>
       </div>
     </section>
   );

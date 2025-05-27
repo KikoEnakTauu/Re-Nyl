@@ -1,5 +1,4 @@
 import Hero from "@/modules/home/ui/components/Hero";
-import Footer from "@/modules/home/ui/components/Footer";
 import { Feature } from "@/modules/home/ui/components/Feature";
 import { PopularVinyl } from "@/modules/home/ui/components/PopularVinyl";
 import { Stats } from "@/modules/home/ui/components/stats";

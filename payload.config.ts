@@ -6,11 +6,14 @@ import path from "path";
 import { buildConfig } from "payload";
 import { fileURLToPath } from "url";
 import sharp from "sharp";
+import { multiTenantPlugin } from "@payloadcms/plugin-multi-tenant";
 
 import { Users } from "./collections/Users";
 import { Media } from "./collections/Media";
 import { Genre } from "./collections/Genre";
 import { Products } from "./collections/Products";
+import { Store } from "./collections/Store";
+import { Cart } from "./collections/Cart";
 
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
@@ -21,8 +24,11 @@ export default buildConfig({
     importMap: {
       baseDir: path.resolve(dirname),
     },
+    components: {
+      beforeDashboard: ["/components/back-to-home"],
+    },
   },
-  collections: [Users, Media, Genre, Products],
+  collections: [Users, Media, Genre, Products, Store, Cart],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || "",
   typescript: {
@@ -34,6 +40,16 @@ export default buildConfig({
   sharp,
   plugins: [
     payloadCloudPlugin(),
+    multiTenantPlugin({
+      collections: {
+        products: {},
+      },
+      tenantsArrayField: {
+        includeDefaultField: false,
+      },
+      userHasAccessToAllTenants: (user) =>
+        Boolean(user?.roles?.includes("super-admin")),
+    }),
     // storage-adapter-placeholder
   ],
 });

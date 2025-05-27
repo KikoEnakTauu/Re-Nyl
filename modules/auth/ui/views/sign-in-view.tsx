@@ -90,7 +90,7 @@ export const SignInView = () => {
                 size={"sm"}
                 className="text-base border-none underline"
               >
-                <Link prefetch href="/sign-up">
+                <Link prefetch href="/customer-sign-up">
                   Sign Up
                 </Link>
               </Button>
@@ -103,7 +103,7 @@ export const SignInView = () => {
                 <FormItem>
                   <FormLabel className="text-base">Email</FormLabel>
                   <FormControl>
-                    <Input {...field} />
+                    <Input {...field} autoComplete="off" />
                   </FormControl>
 
                   <FormMessage />

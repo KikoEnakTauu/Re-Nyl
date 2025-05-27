@@ -1,7 +1,6 @@
 import React from "react";
 import Hero from "@/modules/shop/ui/components/Hero";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
-import ProductView from "@/modules/shop/ui/components/ProductView";
 import {
   SearchFilters,
   SearchFiltersLoading,

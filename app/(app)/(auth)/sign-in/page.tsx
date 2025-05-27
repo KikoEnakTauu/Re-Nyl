@@ -13,3 +13,4 @@ const page = async () => {
 };
 
 export default page;
+export const dynamic = "force-dynamic";

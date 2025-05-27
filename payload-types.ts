@@ -71,6 +71,8 @@ export interface Config {
     media: Media;
     Genre: Genre;
     products: Product;
+    tenants: Tenant;
+    cart: Cart;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
@@ -81,6 +83,8 @@ export interface Config {
     media: MediaSelect<false> | MediaSelect<true>;
     Genre: GenreSelect<false> | GenreSelect<true>;
     products: ProductsSelect<false> | ProductsSelect<true>;
+    tenants: TenantsSelect<false> | TenantsSelect<true>;
+    cart: CartSelect<false> | CartSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
@@ -124,6 +128,13 @@ export interface UserAuthOperations {
 export interface User {
   id: string;
   username: string;
+  roles?: ('super-admin' | 'user' | 'seller')[] | null;
+  tenants?:
+    | {
+        tenant: string | Tenant;
+        id?: string | null;
+      }[]
+    | null;
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -134,6 +145,21 @@ export interface User {
   loginAttempts?: number | null;
   lockUntil?: string | null;
   password?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "tenants".
+ */
+export interface Tenant {
+  id: string;
+  /**
+   * This is the name of the store (e.g John's Store)
+   */
+  name: string;
+  slug: string;
+  image?: (string | null) | Media;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -171,6 +197,7 @@ export interface Genre {
  */
 export interface Product {
   id: string;
+  tenant?: (string | null) | Tenant;
   name: string;
   artist: string;
   /**
@@ -179,6 +206,33 @@ export interface Product {
   price: number;
   genre: string | Genre;
   image: string | Media;
+  year: number;
+  label: string;
+  format: '12" LP' | '7" Single' | '10" EP' | 'Picture Disc' | 'Colored Vinyl' | 'Box Set';
+  condition: 'Mint' | 'Near Mint' | 'Very Good Plus' | 'Very Good' | 'Good' | 'Poor';
+  speed: '33_1_3' | '45' | '78';
+  tracks: {
+    title: string;
+    duration: string;
+    id?: string | null;
+  }[];
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "cart".
+ */
+export interface Cart {
+  id: string;
+  user: string | User;
+  items?:
+    | {
+        product: string | Product;
+        quantity: number;
+        id?: string | null;
+      }[]
+    | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -204,6 +258,14 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'products';
         value: string | Product;
+      } | null)
+    | ({
+        relationTo: 'tenants';
+        value: string | Tenant;
+      } | null)
+    | ({
+        relationTo: 'cart';
+        value: string | Cart;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -253,6 +315,13 @@ export interface PayloadMigration {
  */
 export interface UsersSelect<T extends boolean = true> {
   username?: T;
+  roles?: T;
+  tenants?:
+    | T
+    | {
+        tenant?: T;
+        id?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
   email?: T;
@@ -296,11 +365,51 @@ export interface GenreSelect<T extends boolean = true> {
  * via the `definition` "products_select".
  */
 export interface ProductsSelect<T extends boolean = true> {
+  tenant?: T;
   name?: T;
   artist?: T;
   price?: T;
   genre?: T;
   image?: T;
+  year?: T;
+  label?: T;
+  format?: T;
+  condition?: T;
+  speed?: T;
+  tracks?:
+    | T
+    | {
+        title?: T;
+        duration?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "tenants_select".
+ */
+export interface TenantsSelect<T extends boolean = true> {
+  name?: T;
+  slug?: T;
+  image?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "cart_select".
+ */
+export interface CartSelect<T extends boolean = true> {
+  user?: T;
+  items?:
+    | T
+    | {
+        product?: T;
+        quantity?: T;
+        id?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
 }

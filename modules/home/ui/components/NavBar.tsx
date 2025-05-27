@@ -1,16 +1,16 @@
 "use client";
 import { useTRPC } from "@/trpc/client";
-import { Button } from "../../../../components/ui/button";
-import { ShoppingCart, User } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { useQuery } from "@tanstack/react-query";
+import { CheckoutButton } from "@/modules/checkout/ui/components/checkout-button";
+import { LogoutButton } from "./logout-button";
 
 const NavBar = () => {
   const trpc = useTRPC();
   const session = useQuery(trpc.auth.session.queryOptions());
-
   const [isScrollingDown, setIsScrollingDown] = useState(false);
 
   useEffect(() => {
@@ -49,19 +49,25 @@ const NavBar = () => {
         {/* login, log out button */}
         {session.data?.user ? (
           <div className="flex items-center gap-5 flex-shrink-0">
-            <Button variant="ghost" size="icon">
-              <ShoppingCart className="h-5 w-5" />
-              <span className="sr-only">Cart</span>
-            </Button>
-            <Button asChild className="cursor-pointer">
-              <Link prefetch href="/admin">
-                <span>Dashboard</span>
-              </Link>
-            </Button>
+            <CheckoutButton />
+
+            {!(
+              Array.isArray(session.data?.user?.roles) &&
+              session.data.user.roles.length === 1 &&
+              session.data.user.roles[0] === "user"
+            ) && (
+              <Button asChild className="cursor-pointer bg-white text-black hover:text-white">
+                <Link prefetch href="/admin">
+                  <span>Dashboard</span>
+                </Link>
+              </Button>
+            )}
+
+            <LogoutButton />
           </div>
         ) : (
           <div className="flex items-center gap-5 flex-shrink-0">
-            <Button asChild className="cursor-pointer">
+            <Button asChild className="cursor-pointer text-black" variant={"outline"}>
               <Link prefetch href="/sign-in">
                 <span>Login</span>
               </Link>
@@ -69,7 +75,7 @@ const NavBar = () => {
 
             <Button
               asChild
-              className="cursor-pointer text-black"
+              className="cursor-pointer text-white bg-transparent"
               variant={"outline"}
             >
               <Link prefetch href="/sign-up">
