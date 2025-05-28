@@ -10,6 +10,7 @@ interface Props {
 export const GenreButton = ({ data, isActive }: Props) => {
   return (
     <Button
+      asChild
       className={cn(
         "px-4 bg-transparent rounded-3xl border-1 text-black hover:bg-black hover:text-white hover:border-white transition-all",
         isActive && "bg-black text-white border-white"
