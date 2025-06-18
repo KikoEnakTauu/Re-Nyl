@@ -9,9 +9,12 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { formatAsCurrency } from "@/modules/products/ui/components/price-filter";
 import { redirect } from "next/navigation";
+import { Badge } from "@/components/ui/badge";
+import { InboxIcon, Minus, Plus, X } from "lucide-react";
 
 export const CheckoutView = () => {
-  const { productIds, clearCart } = useCart();
+  const { productIds, clearCart, removeProduct, clearProduct, addProduct } =
+    useCart();
 
   const trpc = useTRPC();
   const { data, error } = useQuery(
@@ -41,8 +44,19 @@ export const CheckoutView = () => {
       toast.success("Order placed successfully!");
       redirect("/shop");
     } catch (error) {
+      console.log(error);
       toast.error(`Failed to place order. Please try again. ${error}`);
     }
+  };
+
+  const handleClearAll = () => {
+    clearCart();
+    toast.success("Cart cleared successfully");
+  };
+
+  const handleRemoveProduct = (productId: string, productName: string) => {
+    clearProduct(productId);
+    toast.success(`${productName} removed from cart`);
   };
 
   useEffect(() => {
@@ -58,20 +72,88 @@ export const CheckoutView = () => {
         {/* Left Column - Cart Items */}
         <div className="lg:col-span-4 space-y-8">
           <div className="bg-white rounded-lg shadow-sm p-6">
-            <h2 className="text-xl font-semibold text-gray-900 mb-6">
-              Your Items
-            </h2>
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-xl font-semibold text-gray-900">
+                Your Items
+              </h2>
+              {cartItems.length > 0 && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleClearAll}
+                  className="text-red-600 hover:text-red-700 hover:bg-red-50 border-red-200"
+                >
+                  Clear All
+                </Button>
+              )}
+            </div>
             <div className="space-y-4">
-              {data?.docs.map((product) => (
-                <CheckoutItem
-                  key={product.id}
-                  imageUrl={product.image?.url ?? undefined}
-                  name={product.name}
-                  price={product.price}
-                  quantity={productIds[product.id] ?? 0}
-                  artist={product.artist}
-                />
-              ))}
+              {data?.docs.map((product) => {
+                const quantity = productIds[product.id] ?? 0;
+
+                return (
+                  <div
+                    key={product.id}
+                    className="relative border border-gray-100 rounded-lg p-4 shadow-sm"
+                  >
+                    <div className="flex flex-col sm:flex-row gap-4">
+                      {/* Product Image and Details */}
+                      <div className="flex-grow">
+                        <CheckoutItem
+                          imageUrl={product.image?.url ?? undefined}
+                          name={product.name}
+                          price={product.price}
+                          quantity={quantity}
+                          artist={product.artist}
+                        />
+                      </div>
+
+                      {/* Quantity Controls */}
+                      <div className="flex items-center space-x-1 self-end sm:self-center">
+                        <Button
+                          variant="outline"
+                          size="icon"
+                          className="h-8 w-8 rounded-full"
+                          onClick={() => removeProduct(product.id)}
+                          disabled={quantity <= 1}
+                        >
+                          <Minus className="h-3 w-3" />
+                        </Button>
+
+                        <div className="w-12 h-8 flex items-center justify-center bg-gray-50 border border-gray-200 rounded text-sm font-medium">
+                          {product.quantity}
+                        </div>
+
+                        <Button
+                          variant="outline"
+                          size="icon"
+                          className="h-8 w-8 rounded-full"
+                          onClick={() => addProduct(product.id, 1)}
+                        >
+                          <Plus className="h-3 w-3" />
+                        </Button>
+                      </div>
+                    </div>
+
+                    {/* Remove Product Badge */}
+                    <Badge
+                      variant="destructive"
+                      className="absolute top-2 right-2 cursor-pointer hover:bg-red-600 p-1"
+                      onClick={() =>
+                        handleRemoveProduct(product.id, product.name)
+                      }
+                    >
+                      <X className="h-3 w-3" />
+                    </Badge>
+                  </div>
+                );
+              })}
+              {cartItems.length === 0 && (
+                <div className="border border-black border-dashed flex items-center justify-center p-8 flex-col gap-y-4 bg-white w-full rounded-lg">
+                  <InboxIcon />
+                  <p className="text-base font-medium">No products found</p>
+                </div>
+              )}
             </div>
           </div>
         </div>

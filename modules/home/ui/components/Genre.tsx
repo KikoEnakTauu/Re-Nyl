@@ -8,6 +8,8 @@ const categories = [
   { name: "Rock", count: 1250, icon: "🎸", link: "/shop/rock" },
   { name: "Jazz", count: 890, icon: "🎺", link: "/shop/jazz" },
   { name: "Pop", count: 650, icon: "🎤", link: "/shop/pop" },
+  { name: "Country", count: 97, icon: "🪕", link: "/shop/country" },
+  { name: "Reggae", count: 150, icon: "🪇", link: "/shop/reggae" },
 ];
 
 export const Genre = () => {

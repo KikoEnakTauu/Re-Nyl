@@ -7,6 +7,7 @@ export const useCart = () => {
   const addProduct = useCartStore((state) => state.addProduct);
   const removeProduct = useCartStore((state) => state.removeProduct);
   const clearCart = useCartStore((state) => state.clearCart);
+  const clearProduct = useCartStore((state) => state.clearProduct);
 
   // Toggle product presence in cart (add if not present, remove if quantity is 1)
   const toggleProduct = (
@@ -43,6 +44,7 @@ export const useCart = () => {
   };
 
   return {
+    clearProduct,
     productIds,
     addProduct,
     removeProduct,

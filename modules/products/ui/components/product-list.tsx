@@ -6,6 +6,7 @@ import { ProductCard, ProductCardSkeleton } from "./product-card";
 import { Button } from "@/components/ui/button";
 import { DEFAULT_LIMIT } from "@/constants";
 import { InboxIcon } from "lucide-react";
+import AnimatedContent from "@/react-bits/Animations/AnimatedContent/AnimatedContent";
 
 interface Props {
   genre?: string;
@@ -45,24 +46,35 @@ export const ProductList = ({ genre }: Props) => {
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols2 xl:grid-cols-3 2xl:grid-cols-4 gap-4">
         {data.pages
           .flatMap((page) => page.docs)
-          .map((product) => (
-            <ProductCard
-              key={product.id}
-              id={product.id}
-              name={product.name}
-              imageUrl={product.image.url}
-              artistName={product.artist}
-              authorUsername={product.tenant?.name}
-              price={product.price}
-            />
+          .map((product, index) => (
+            <AnimatedContent
+              distance={150}
+              config={{ tension: 100, friction: 20 }}
+              initialOpacity={0}
+              animateOpacity
+              scale={1}
+              threshold={0.1}
+              delay={index * 200}
+            >
+              <ProductCard
+                key={product.id}
+                id={product.id}
+                name={product.name}
+                imageUrl={product.image.url}
+                artistName={product.artist}
+                authorUsername={product.tenant?.name}
+                price={product.price}
+              />
+            </AnimatedContent>
           ))}
       </div>
       <div className="flex justify-center pt-8">
         {hasNextPage && (
           <Button
+            variant={"second"}
             disabled={isFetchingNextPage}
             onClick={() => fetchNextPage()}
-            className="font-medium disabled:opacity-50 text-base bg-white"
+            className="font-medium disabled:opacity-50"
           >
             Load More
           </Button>

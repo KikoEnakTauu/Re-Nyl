@@ -9,6 +9,7 @@ export const CheckoutButton = () => {
 
   return (
     <Button
+      asChild
       variant="ghost"
       size="icon"
       className="relative text-white hover:text-black cursor-pointer transition-colors"

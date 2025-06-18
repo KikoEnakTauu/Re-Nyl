@@ -6,6 +6,7 @@ interface CartState {
   addProduct: (productId: string, quantity: number) => void;
   removeProduct: (productId: string) => void;
   clearCart: () => void;
+  clearProduct: (productId: string) => void;
   getQuantity: (productId: string) => number;
 }
 
@@ -39,6 +40,13 @@ export const useCartStore = create<CartState>()(
               },
             };
           }
+        }),
+
+      clearProduct: (productId) =>
+        set((state) => {
+          const newCart = { ...state.productIds };
+          delete newCart[productId];
+          return { productIds: newCart };
         }),
 
       clearCart: () => {
